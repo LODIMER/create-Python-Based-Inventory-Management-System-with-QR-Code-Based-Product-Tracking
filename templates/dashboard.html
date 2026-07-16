@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block eyebrow %}Live inventory{% endblock %}
+{% block heading %}Stock at a glance{% endblock %}
+{% block actions %}
+  <a class="btn btn-primary" href="{{ url_for('product_new') }}">Add product</a>
+  <a class="btn btn-secondary" href="{{ url_for('scan') }}">Scan QR</a>
+{% endblock %}
+
+{% block content %}
+<section class="stat-grid reveal">
+  <article class="stat">
+    <p class="stat-label">Products</p>
+    <p class="stat-value">{{ stats.total_products }}</p>
+  </article>
+  <article class="stat">
+    <p class="stat-label">Units on hand</p>
+    <p class="stat-value">{{ stats.total_units }}</p>
+  </article>
+  <article class="stat">
+    <p class="stat-label">Inventory value</p>
+    <p class="stat-value">{{ stats.inventory_value | money }}</p>
+  </article>
+  <article class="stat {% if stats.low_stock %}stat-warn{% endif %}">
+    <p class="stat-label">Low stock alerts</p>
+    <p class="stat-value">{{ stats.low_stock or 0 }}</p>
+  </article>
+</section>
+
+<div class="split-panels">
+  <section class="panel reveal" style="--d: 80ms">
+    <div class="panel-head">
+      <h2>Recent movements</h2>
+      <a href="{{ url_for('movements') }}">View all</a>
+    </div>
+    {% if recent %}
+      <ul class="timeline">
+        {% for row in recent %}
+          <li>
+            <span class="badge badge-{{ row.movement_type }}">{{ row.movement_type }}</span>
+            <div>
+              <strong>{{ row.product_name }}</strong>
+              <p>{{ row.quantity }} units · {{ row.sku }}</p>
+            </div>
+            <time>{{ row.created_at | dt }}</time>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">No stock movements yet. Add a product to get started.</p>
+    {% endif %}
+  </section>
+
+  <section class="panel reveal" style="--d: 140ms">
+    <div class="panel-head">
+      <h2>Low stock</h2>
+      <a href="{{ url_for('products') }}">Manage</a>
+    </div>
+    {% if low_stock %}
+      <ul class="simple-list">
+        {% for item in low_stock %}
+          <li>
+            <a href="{{ url_for('product_detail', product_id=item.id) }}">
+              <strong>{{ item.name }}</strong>
+              <span>{{ item.quantity }} / min {{ item.min_stock }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">All products are above minimum stock.</p>
+    {% endif %}
+  </section>
+</div>
+
+{% if categories %}
+<section class="panel reveal" style="--d: 200ms">
+  <div class="panel-head">
+    <h2>By category</h2>
+  </div>
+  <div class="category-bars">
+    {% set max_units = namespace(categories|map(attribute='units')|list) or 1 %}
+    {% for cat in categories %}
+      <div class="category-row">
+        <div class="category-meta">
+          <strong>{{ cat.category }}</strong>
+          <span>{{ cat.count }} products · {{ cat.units }} units</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width: {{ (cat.units / max_units * 100)|round }}%"></div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

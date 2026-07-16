@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}QR Scan{% endblock %}
+{% block eyebrow %}Tracking{% endblock %}
+{% block heading %}Scan or look up{% endblock %}
+
+{% block content %}
+<section class="scan-hero reveal">
+  <div class="scan-copy">
+    <h2>Track a product by QR</h2>
+    <p>Paste a scanned QR payload, tracking token, or SKU to jump straight to the product record.</p>
+  </div>
+  <form class="scan-form" method="post" action="{{ url_for('scan') }}">
+    <label>
+      <span>QR token / URL / SKU</span>
+      <input type="text" name="token" value="{{ token }}" placeholder="/track/… or SKU-XXXXXXXX" autofocus>
+    </label>
+    <button class="btn btn-primary" type="submit">Look up</button>
+  </form>
+</section>
+
+{% if product %}
+<section class="panel reveal" style="--d: 100ms">
+  <div class="panel-head">
+    <h2>Match found</h2>
+    <a href="{{ url_for('product_detail', product_id=product.id) }}">Full details</a>
+  </div>
+  <div class="match-grid">
+    <img class="qr-image sm" src="{{ url_for('static', filename='qr_codes/' + product.qr_filename) }}" alt="QR for {{ product.name }}">
+    <div>
+      <h3>{{ product.name }}</h3>
+      <p><code>{{ product.sku }}</code> · {{ product.category }}</p>
+      <p>Qty <strong>{{ product.quantity }}</strong> · {{ product.location or 'No location set' }}</p>
+      <p>{{ product.unit_price | money }} each</p>
+      <div class="inline-actions">
+        <a class="btn btn-primary btn-sm" href="{{ url_for('product_detail', product_id=product.id) }}">Manage stock</a>
+        <a class="btn btn-ghost btn-sm" href="{{ url_for('track', token=product.qr_token) }}">Tracking page</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="panel tip-panel reveal" style="--d: 160ms">
+  <h2>How QR tracking works</h2>
+  <ol class="steps">
+    <li>Create a product — StockMark generates a unique QR code automatically.</li>
+    <li>Print or display the QR from the product detail page.</li>
+    <li>Scan it with a phone camera or paste the result here to open the live stock record.</li>
+  </ol>
+</section>
+{% endblock %}

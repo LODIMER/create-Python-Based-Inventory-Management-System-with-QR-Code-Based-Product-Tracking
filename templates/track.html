@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Track · {{ product.name }}{% endblock %}
+{% block eyebrow %}QR tracking{% endblock %}
+{% block heading %}{{ product.name }}{% endblock %}
+{% block actions %}
+  <a class="btn btn-primary" href="{{ url_for('product_detail', product_id=product.id) }}">Manage in inventory</a>
+{% endblock %}
+
+{% block content %}
+{% if scanned %}
+  <p class="scan-banner reveal">Product identified via QR code</p>
+{% endif %}
+
+<div class="detail-layout">
+  <section class="panel reveal">
+    <div class="detail-meta">
+      <div>
+        <p class="meta-label">SKU</p>
+        <p><code>{{ product.sku }}</code></p>
+      </div>
+      <div>
+        <p class="meta-label">Category</p>
+        <p>{{ product.category }}</p>
+      </div>
+      <div>
+        <p class="meta-label">Location</p>
+        <p>{{ product.location or '—' }}</p>
+      </div>
+      <div>
+        <p class="meta-label">Quantity</p>
+        <p class="{% if product.quantity <= product.min_stock %}text-warn{% endif %}">{{ product.quantity }}</p>
+      </div>
+      <div>
+        <p class="meta-label">Unit price</p>
+        <p>{{ product.unit_price | money }}</p>
+      </div>
+      <div>
+        <p class="meta-label">Status</p>
+        <p>{% if product.quantity <= product.min_stock %}Low stock{% else %}In stock{% endif %}</p>
+      </div>
+    </div>
+    {% if product.description %}
+      <p class="description">{{ product.description }}</p>
+    {% endif %}
+  </section>
+
+  <aside class="panel qr-panel reveal" style="--d: 100ms">
+    <img class="qr-image" src="{{ url_for('static', filename='qr_codes/' + product.qr_filename) }}" alt="QR code">
+    <p class="muted">Token</p>
+    <p class="token"><code>{{ product.qr_token }}</code></p>
+  </aside>
+</div>
+
+<section class="panel reveal" style="--d: 160ms">
+  <div class="panel-head">
+    <h2>Recent activity</h2>
+  </div>
+  {% if movements %}
+    <ul class="timeline">
+      {% for m in movements %}
+        <li>
+          <span class="badge badge-{{ m.movement_type }}">{{ m.movement_type }}</span>
+          <div>
+            <strong>{{ m.quantity }} units</strong>
+            <p>{{ m.note or 'No note' }}</p>
+          </div>
+          <time>{{ m.created_at | dt }}</time>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">No movement history.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block eyebrow %}Catalog{% endblock %}
+{% block heading %}Products{% endblock %}
+{% block actions %}
+  <a class="btn btn-primary" href="{{ url_for('product_new') }}">Add product</a>
+{% endblock %}
+
+{% block content %}
+<form class="filter-bar reveal" method="get" action="{{ url_for('products') }}">
+  <input type="search" name="q" value="{{ q }}" placeholder="Search name, SKU, or location">
+  <select name="category">
+    <option value="">All categories</option>
+    {% for c in categories %}
+      <option value="{{ c.category }}" {% if category == c.category %}selected{% endif %}>{{ c.category }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-secondary" type="submit">Filter</button>
+</form>
+
+{% if products %}
+  <div class="table-wrap reveal" style="--d: 80ms">
+    <table>
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Product</th>
+          <th>Category</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Location</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+          <tr class="{% if p.quantity <= p.min_stock %}row-warn{% endif %}">
+            <td><code>{{ p.sku }}</code></td>
+            <td>
+              <a class="link-strong" href="{{ url_for('product_detail', product_id=p.id) }}">{{ p.name }}</a>
+            </td>
+            <td>{{ p.category }}</td>
+            <td>{{ p.quantity }}</td>
+            <td>{{ p.unit_price | money }}</td>
+            <td>{{ p.location or '—' }}</td>
+            <td><a class="btn btn-ghost btn-sm" href="{{ url_for('product_detail', product_id=p.id) }}">Open</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p class="empty panel reveal">No products match your filters. <a href="{{ url_for('product_new') }}">Create one</a>.</p>
+{% endif %}
+{% endblock %}

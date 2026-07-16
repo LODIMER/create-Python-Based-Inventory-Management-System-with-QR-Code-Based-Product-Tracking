@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if mode == 'edit' else 'New' }} product{% endblock %}
+{% block eyebrow %}Catalog{% endblock %}
+{% block heading %}{{ 'Edit product' if mode == 'edit' else 'New product' }}{% endblock %}
+
+{% block content %}
+<form class="form-panel reveal" method="post"
+  action="{% if mode == 'edit' %}{{ url_for('product_edit', product_id=product_id) }}{% else %}{{ url_for('product_new') }}{% endif %}">
+  <div class="form-grid">
+    <label>
+      <span>Product name</span>
+      <input type="text" name="name" required value="{{ product.name if product else '' }}" placeholder="Wireless barcode scanner">
+    </label>
+    <label>
+      <span>SKU {% if mode == 'new' %}<em>(auto if blank)</em>{% endif %}</span>
+      <input type="text" name="sku" value="{{ product.sku if product else '' }}" placeholder="SKU-XXXXXXXX">
+    </label>
+    <label>
+      <span>Category</span>
+      <input type="text" name="category" value="{{ product.category if product else 'General' }}" placeholder="Electronics">
+    </label>
+    <label>
+      <span>Location</span>
+      <input type="text" name="location" value="{{ product.location if product else '' }}" placeholder="Aisle B · Shelf 3">
+    </label>
+    <label>
+      <span>Quantity</span>
+      <input type="number" name="quantity" min="0" value="{{ product.quantity if product else 0 }}">
+    </label>
+    <label>
+      <span>Unit price</span>
+      <input type="number" name="unit_price" min="0" step="0.01" value="{{ product.unit_price if product else 0 }}">
+    </label>
+    <label>
+      <span>Minimum stock alert</span>
+      <input type="number" name="min_stock" min="0" value="{{ product.min_stock if product else 5 }}">
+    </label>
+    <label class="full">
+      <span>Description</span>
+      <textarea name="description" rows="4" placeholder="Optional notes about this product">{{ product.description if product else '' }}</textarea>
+    </label>
+  </div>
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">{{ 'Save changes' if mode == 'edit' else 'Create & generate QR' }}</button>
+    <a class="btn btn-ghost" href="{% if mode == 'edit' %}{{ url_for('product_detail', product_id=product_id) }}{% else %}{{ url_for('products') }}{% endif %}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

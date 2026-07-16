@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block eyebrow %}Product detail{% endblock %}
+{% block heading %}{{ product.name }}{% endblock %}
+{% block actions %}
+  <a class="btn btn-secondary" href="{{ url_for('product_edit', product_id=product.id) }}">Edit</a>
+  <form method="post" action="{{ url_for('product_delete', product_id=product.id) }}" onsubmit="return confirm('Delete this product permanently?');">
+    <button class="btn btn-danger" type="submit">Delete</button>
+  </form>
+{% endblock %}
+
+{% block content %}
+<div class="detail-layout">
+  <section class="panel reveal">
+    <div class="detail-meta">
+      <div>
+        <p class="meta-label">SKU</p>
+        <p><code>{{ product.sku }}</code></p>
+      </div>
+      <div>
+        <p class="meta-label">Category</p>
+        <p>{{ product.category }}</p>
+      </div>
+      <div>
+        <p class="meta-label">Location</p>
+        <p>{{ product.location or '—' }}</p>
+      </div>
+      <div>
+        <p class="meta-label">Unit price</p>
+        <p>{{ product.unit_price | money }}</p>
+      </div>
+      <div>
+        <p class="meta-label">On hand</p>
+        <p class="{% if product.quantity <= product.min_stock %}text-warn{% endif %}">
+          {{ product.quantity }}
+          <small>min {{ product.min_stock }}</small>
+        </p>
+      </div>
+      <div>
+        <p class="meta-label">Value</p>
+        <p>{{ (product.quantity * product.unit_price) | money }}</p>
+      </div>
+    </div>
+    {% if product.description %}
+      <p class="description">{{ product.description }}</p>
+    {% endif %}
+
+    <div class="stock-forms">
+      <form method="post" action="{{ url_for('product_stock', product_id=product.id) }}" class="stock-form">
+        <h3>Stock in</h3>
+        <input type="hidden" name="action" value="in">
+        <input type="number" name="amount" min="1" value="1" required>
+        <input type="text" name="note" placeholder="Receiving note (optional)">
+        <button class="btn btn-primary btn-sm" type="submit">Add stock</button>
+      </form>
+      <form method="post" action="{{ url_for('product_stock', product_id=product.id) }}" class="stock-form">
+        <h3>Stock out</h3>
+        <input type="hidden" name="action" value="out">
+        <input type="number" name="amount" min="1" value="1" required>
+        <input type="text" name="note" placeholder="Issue note (optional)">
+        <button class="btn btn-secondary btn-sm" type="submit">Remove stock</button>
+      </form>
+    </div>
+  </section>
+
+  <aside class="panel qr-panel reveal" style="--d: 100ms">
+    <h2>QR code</h2>
+    <p class="muted">Scan to open the product tracking page.</p>
+    <img class="qr-image" src="{{ url_for('static', filename='qr_codes/' + product.qr_filename) }}" alt="QR code for {{ product.name }}">
+    <p class="token"><code>{{ product.qr_token }}</code></p>
+    <a class="btn btn-ghost btn-sm" href="{{ url_for('track', token=product.qr_token) }}">Open tracking link</a>
+  </aside>
+</div>
+
+<section class="panel reveal" style="--d: 160ms">
+  <div class="panel-head">
+    <h2>Movement history</h2>
+  </div>
+  {% if movements %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Qty</th>
+            <th>Note</th>
+            <th>When</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in movements %}
+            <tr>
+              <td><span class="badge badge-{{ m.movement_type }}">{{ m.movement_type }}</span></td>
+              <td>{{ m.quantity }}</td>
+              <td>{{ m.note or '—' }}</td>
+              <td>{{ m.created_at | dt }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="empty">No movements recorded yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

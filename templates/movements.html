@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Movements{% endblock %}
+{% block eyebrow %}History{% endblock %}
+{% block heading %}Stock movements{% endblock %}
+
+{% block content %}
+{% if movements %}
+  <div class="table-wrap reveal">
+    <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Product</th>
+          <th>SKU</th>
+          <th>Type</th>
+          <th>Qty</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in movements %}
+          <tr>
+            <td>{{ m.created_at | dt }}</td>
+            <td>
+              <a class="link-strong" href="{{ url_for('product_detail', product_id=m.product_id) }}">{{ m.product_name }}</a>
+            </td>
+            <td><code>{{ m.sku }}</code></td>
+            <td><span class="badge badge-{{ m.movement_type }}">{{ m.movement_type }}</span></td>
+            <td>{{ m.quantity }}</td>
+            <td>{{ m.note or '—' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p class="empty panel reveal">No movements recorded yet.</p>
+{% endif %}
+{% endblock %}
