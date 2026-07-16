@@ -79,7 +79,7 @@
     <h2>By category</h2>
   </div>
   <div class="category-bars">
-    {% set max_units = namespace(categories|map(attribute='units')|list) or 1 %}
+    {% set max_units = (categories|map(attribute='units')|list|max) or 1 %}
     {% for cat in categories %}
       <div class="category-row">
         <div class="category-meta">
