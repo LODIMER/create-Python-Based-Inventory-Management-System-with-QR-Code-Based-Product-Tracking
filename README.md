@@ -1,25 +1,41 @@
 # StockMark — Inventory Management with QR Tracking
 
-A Python Flask web app for managing product inventory. Every product gets a unique QR code that links to its stock details, so you can look items up quickly by scanning or searching.
+A Python Flask web app for managing product inventory. Every product gets a unique QR code that links to its stock details, so you can look items up quickly by scanning with your webcam, phone, or manual search.
 
 ## Features
 
-- Dashboard with total products, units on hand, inventory value, and low-stock alerts
-- Add, edit, search, and delete products
-- Automatic QR code generation for each product
-- Stock in / stock out with movement history
-- QR scan page (paste a token, URL, or SKU)
-- Category overview and movement log
+- **Dashboard** — total products, units on hand, inventory value, low-stock alerts, and category breakdown
+- **Product management** — add, edit, search, filter, and delete products
+- **QR codes** — automatically generated for each product
+- **Webcam scanner** — scan product QR codes directly from the browser
+- **Stock in / stock out** — update quantities with full movement history
+- **Movement log** — track stock in, stock out, and manual adjustments
 
-## What to download / install
+## Tech stack
 
-### 1. Python 3.10 or newer
+| Layer | Technology |
+|-------|------------|
+| Backend | Python, Flask |
+| Database | SQLite |
+| QR generation | `qrcode`, Pillow |
+| QR scanning (browser) | [html5-qrcode](https://github.com/mebjas/html5-qrcode) (loaded via CDN) |
+| Frontend | HTML, CSS, JavaScript |
 
-Download and install from: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+## Requirements
 
-During setup on Windows, check **Add python.exe to PATH**.
+- **Python 3.10+**
+- A modern web browser (Chrome, Edge, or Firefox recommended)
+- Webcam (optional, for live QR scanning)
 
-Confirm it works:
+## Installation
+
+### 1. Install Python
+
+Download from [python.org/downloads](https://www.python.org/downloads/).
+
+On Windows, enable **Add python.exe to PATH** during setup.
+
+Verify installation:
 
 ```bash
 python --version
@@ -31,23 +47,27 @@ If `python` is not found, try:
 py --version
 ```
 
-### 2. Project files
+On Windows, you may also need the full path:
 
-Clone or download this repository, then open a terminal in the project folder (the one that contains `app.py`).
+```powershell
+C:\Users\<YourName>\AppData\Local\Programs\Python\Python312\python.exe --version
+```
 
-### 3. Python packages
+### 2. Get the project
 
-Install the required libraries from `requirements.txt`:
+Clone or download this repository, then open a terminal in the project folder (the one containing `app.py`).
+
+### 3. Install dependencies
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-This installs:
+Packages installed:
 
 | Package | Purpose |
 |---------|---------|
-| Flask | Web framework for the site |
+| Flask | Web framework |
 | qrcode | Generate product QR codes |
 | Pillow | Image support for QR codes |
 
@@ -59,21 +79,24 @@ From the project folder:
 python app.py
 ```
 
-You should see something like:
+Expected output:
 
 ```text
  * Running on http://127.0.0.1:5000
 ```
 
-Open your browser and go to:
+Open in your browser:
 
 **http://127.0.0.1:5000**
 
-To stop the server, press `Ctrl + C` in the terminal.
+Stop the server with `Ctrl + C`.
 
-The first run creates `inventory.db` (SQLite database) and a `static/qr_codes/` folder for QR images automatically.
+On first run, the app automatically creates:
 
-### Optional: virtual environment
+- `inventory.db` — SQLite database
+- `static/qr_codes/` — folder for generated QR images
+
+### Virtual environment (recommended)
 
 ```bash
 python -m venv venv
@@ -88,73 +111,103 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
-## How to use the website
+## How to use
 
-### Overview (home)
+### Overview (home page)
 
-Shows inventory totals, recent stock movements, low-stock items, and category breakdowns.
+View inventory totals, recent stock movements, low-stock warnings, and products grouped by category.
 
 ### Products
 
-1. Open **Products** in the sidebar.
-2. Click **Add product** (or **+ New product**).
-3. Fill in name, quantity, price, location, category, and minimum stock.
-4. Save — a QR code is generated automatically.
-5. Open a product to view its QR image, edit details, or change stock.
+1. Go to **Products** in the sidebar.
+2. Click **Add product** or **+ New product**.
+3. Enter name, quantity, price, location, category, and minimum stock level.
+4. Save — a QR code is created automatically.
+5. Open any product to view its QR code, edit details, or update stock.
 
-You can search by name, SKU, or location, and filter by category.
+Search by name, SKU, or location. Filter by category.
 
 ### Stock in / stock out
 
 On a product detail page:
 
 - **Stock in** — add units to inventory
-- **Stock out** — remove units (cannot exceed current quantity)
+- **Stock out** — remove units (cannot go below zero)
 
-Each change is saved in the movement history.
+Every change is recorded in the movement history.
 
 ### QR codes
 
-- Each product has a unique QR code pointing to `/track/<token>`.
-- Print or display the QR from the product detail page.
-- Scanning it (or opening the link) shows that product’s tracking page.
+- Each product has a unique QR code linking to `/track/<token>`.
+- View or print the QR from the product detail page.
+- Scanning the code opens the live tracking page for that product.
 
-### QR Scan page
-1. Open **QR Scan**.
-2. Click **Start camera** and allow webcam access when your browser asks.
-3. Hold a product QR code in front of the camera — the app opens the product automatically.
-4. Or paste a QR token, full track URL, or SKU in the lookup field and click **Look up**.
+### QR Scan (webcam + manual lookup)
 
-**Note:** Webcam scanning works in Chrome, Edge, and Firefox over `http://localhost` or `http://127.0.0.1`. Some browsers block camera access on other addresses unless the site uses HTTPS.
+1. Open **QR Scan** in the sidebar.
+2. Click **Start camera** and allow webcam access when prompted.
+3. Point the camera at a product QR code — the product page opens automatically.
+4. Click **Stop camera** when finished.
+5. Or paste a QR token, full track URL, or SKU in the lookup field and click **Look up**.
+
+**Camera note:** Webcam scanning works on `http://127.0.0.1` or `http://localhost`. Other addresses may require HTTPS before the browser allows camera access.
 
 ### Movements
 
-Open **Movements** to see recent stock in, stock out, and adjustment records across all products.
+Open **Movements** to see the latest stock in, stock out, and adjustment records across all products.
 
 ## Project structure
 
 ```text
 .
-├── app.py                 # Flask application and routes
+├── app.py                 # Flask app, routes, and database setup
 ├── requirements.txt       # Python dependencies
+├── README.md
 ├── inventory.db           # SQLite database (created on first run)
 ├── static/
-│   ├── css/style.css
-│   ├── js/app.js
+│   ├── css/style.css      # Styles
+│   ├── js/app.js          # Shared UI behavior
+│   ├── js/scan.js         # Webcam QR scanner
 │   └── qr_codes/          # Generated QR images
 └── templates/             # HTML pages
+    ├── base.html
+    ├── dashboard.html
+    ├── products.html
+    ├── product_detail.html
+    ├── product_form.html
+    ├── scan.html
+    ├── track.html
+    └── movements.html
 ```
 
 ## Troubleshooting
 
-| Problem | What to try |
-|---------|-------------|
-| `python` / `pip` not recognized | Reinstall Python with **Add to PATH**, or use `py -m pip` and `py app.py` |
-| Port 5000 already in use | Stop the other process using that port, or change `port=5000` in `app.py` |
-| Page shows an error after code changes | Restart the server (`Ctrl + C`, then `python app.py` again) |
-| QR image missing | Open the product detail page again after creating the product; check `static/qr_codes/` |
+| Problem | Solution |
+|---------|----------|
+| `python` or `pip` not recognized | Reinstall Python with **Add to PATH**, or use `py -m pip` and `py app.py` |
+| Port 5000 already in use | Stop the other app on that port, or change `port=5000` in `app.py` |
+| Page error after editing code | Restart the server (`Ctrl + C`, then `python app.py`) |
+| QR image missing | Re-open the product page; check `static/qr_codes/` |
+| Camera won't start | Allow camera permission in browser settings; close other apps using the webcam |
+| Camera blocked on non-localhost URL | Use `http://127.0.0.1:5000` or deploy with HTTPS |
+| Git / commit not working | Install [Git for Windows](https://git-scm.com/download/win), then run `git init` in the project folder |
+
+## Git setup (optional)
+
+If you want to commit this project to GitHub:
+
+1. Install Git from [git-scm.com/download/win](https://git-scm.com/download/win).
+2. Restart your terminal or IDE after installation.
+3. In the project folder:
+
+```bash
+git init
+git add .
+git commit -m "Initial commit: inventory management with QR tracking"
+```
 
 ## Notes
 
-- This uses Flask’s built-in development server — fine for local use, not for public production hosting.
-- Data is stored locally in `inventory.db`. Back up that file if you want to keep your inventory.
+- Uses Flask's built-in development server — suitable for local use, not for production deployment.
+- Inventory data is stored in `inventory.db`. Back up this file to keep your data.
+- Webcam scanning requires an internet connection on first load (html5-qrcode is loaded from CDN).
