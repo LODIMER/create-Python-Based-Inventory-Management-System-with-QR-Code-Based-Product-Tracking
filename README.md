@@ -7,7 +7,7 @@ A Python Flask web app for managing product inventory. Every product gets a uniq
 - **Dashboard** — total products, units on hand, inventory value, low-stock alerts, and category breakdown
 - **Product management** — add, edit, search, filter, and delete products
 - **QR codes** — automatically generated for each product
-- **Webcam scanner** — scan product QR codes directly from the browser
+- **Webcam scanner** — scan product QR codes from the browser with selectable cameras
 - **Stock in / stock out** — update quantities with full movement history
 - **Movement log** — track stock in, stock out, and manual adjustments
 
@@ -145,10 +145,11 @@ Every change is recorded in the movement history.
 ### QR Scan (webcam + manual lookup)
 
 1. Open **QR Scan** in the sidebar.
-2. Click **Start camera** and allow webcam access when prompted.
-3. Point the camera at a product QR code — the product page opens automatically.
-4. Click **Stop camera** when finished.
-5. Or paste a QR token, full track URL, or SKU in the lookup field and click **Look up**.
+2. Choose a camera from the **Camera** dropdown (click **Refresh list** if none appear).
+3. Click **Start camera** and allow webcam access when prompted.
+4. Point the camera at a product QR code — the product page opens automatically.
+5. Switch cameras anytime from the dropdown while scanning; your last choice is remembered.
+6. Click **Stop camera** when finished, or paste a token / URL / SKU in the lookup field.
 
 **Camera note:** Webcam scanning works on `http://127.0.0.1` or `http://localhost`. Other addresses may require HTTPS before the browser allows camera access.
 
@@ -189,6 +190,7 @@ Open **Movements** to see the latest stock in, stock out, and adjustment records
 | Page error after editing code | Restart the server (`Ctrl + C`, then `python app.py`) |
 | QR image missing | Re-open the product page; check `static/qr_codes/` |
 | Camera won't start | Allow camera permission in browser settings; close other apps using the webcam |
+| No cameras in dropdown | Click **Refresh list** on the QR Scan page to grant permission and reload devices |
 | Camera blocked on non-localhost URL | Use `http://127.0.0.1:5000` or deploy with HTTPS |
 | Git / commit not working | Install [Git for Windows](https://git-scm.com/download/win), then run `git init` in the project folder |
 

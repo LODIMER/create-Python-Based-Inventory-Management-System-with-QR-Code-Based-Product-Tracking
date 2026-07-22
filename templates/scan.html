@@ -26,7 +26,16 @@
       <button class="btn btn-secondary btn-sm" type="button" id="stop-camera" disabled>Stop camera</button>
     </div>
   </div>
-  <p class="scanner-note">Allow camera access when prompted. Hold a product QR code in front of the camera.</p>
+  <p class="scanner-note">Choose a camera, then click Start. Allow camera access when your browser asks.</p>
+  <div class="scanner-controls">
+    <label class="camera-select-wrap">
+      <span>Camera</span>
+      <select id="camera-select" disabled>
+        <option value="">Detecting cameras…</option>
+      </select>
+    </label>
+    <button class="btn btn-ghost btn-sm" type="button" id="refresh-cameras">Refresh list</button>
+  </div>
   <div id="qr-reader" class="qr-reader"></div>
   <p class="scanner-status" id="scanner-status" data-type="info">Camera is off.</p>
 </section>
@@ -58,7 +67,7 @@
   <ol class="steps">
     <li>Create a product — StockMark generates a unique QR code automatically.</li>
     <li>Print or display the QR from the product detail page.</li>
-    <li>Click <strong>Start camera</strong> above and scan the code with your webcam.</li>
+    <li>Choose your camera from the dropdown, click <strong>Start camera</strong>, and scan the code.</li>
     <li>Or scan with a phone camera and paste the result in the lookup field.</li>
   </ol>
 </section>
