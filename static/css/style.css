@@ -770,6 +770,57 @@ tr:last-child td {
   width: fit-content;
 }
 
+.scanner-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.scanner-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.scanner-note {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.qr-reader {
+  width: min(100%, 420px);
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #0a1218;
+  min-height: 280px;
+}
+
+.qr-reader video {
+  border-radius: 16px;
+}
+
+.scanner-status {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.scanner-status[data-type="active"] {
+  color: var(--teal-dark);
+}
+
+.scanner-status[data-type="success"] {
+  color: var(--teal-dark);
+}
+
+.scanner-status[data-type="error"] {
+  color: var(--danger);
+}
+
 .text-warn {
   color: var(--amber);
   font-weight: 700;

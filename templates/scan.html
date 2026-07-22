@@ -7,7 +7,7 @@
 <section class="scan-hero reveal">
   <div class="scan-copy">
     <h2>Track a product by QR</h2>
-    <p>Paste a scanned QR payload, tracking token, or SKU to jump straight to the product record.</p>
+    <p>Use your webcam to scan a product QR code, or paste a tracking token / SKU below.</p>
   </div>
   <form class="scan-form" method="post" action="{{ url_for('scan') }}">
     <label>
@@ -16,6 +16,19 @@
     </label>
     <button class="btn btn-primary" type="submit">Look up</button>
   </form>
+</section>
+
+<section class="panel scanner-panel reveal" style="--d: 80ms">
+  <div class="panel-head">
+    <h2>Webcam scanner</h2>
+    <div class="scanner-actions">
+      <button class="btn btn-primary btn-sm" type="button" id="start-camera">Start camera</button>
+      <button class="btn btn-secondary btn-sm" type="button" id="stop-camera" disabled>Stop camera</button>
+    </div>
+  </div>
+  <p class="scanner-note">Allow camera access when prompted. Hold a product QR code in front of the camera.</p>
+  <div id="qr-reader" class="qr-reader"></div>
+  <p class="scanner-status" id="scanner-status" data-type="info">Camera is off.</p>
 </section>
 
 {% if product %}
@@ -45,7 +58,13 @@
   <ol class="steps">
     <li>Create a product — StockMark generates a unique QR code automatically.</li>
     <li>Print or display the QR from the product detail page.</li>
-    <li>Scan it with a phone camera or paste the result here to open the live stock record.</li>
+    <li>Click <strong>Start camera</strong> above and scan the code with your webcam.</li>
+    <li>Or scan with a phone camera and paste the result in the lookup field.</li>
   </ol>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="{{ url_for('static', filename='js/scan.js') }}"></script>
 {% endblock %}

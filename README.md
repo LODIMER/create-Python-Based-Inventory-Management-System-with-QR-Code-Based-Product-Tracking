@@ -120,10 +120,12 @@ Each change is saved in the movement history.
 - Scanning it (or opening the link) shows that product’s tracking page.
 
 ### QR Scan page
-
 1. Open **QR Scan**.
-2. Paste a QR token, a full track URL, or a SKU.
-3. Submit to find the matching product.
+2. Click **Start camera** and allow webcam access when your browser asks.
+3. Hold a product QR code in front of the camera — the app opens the product automatically.
+4. Or paste a QR token, full track URL, or SKU in the lookup field and click **Look up**.
+
+**Note:** Webcam scanning works in Chrome, Edge, and Firefox over `http://localhost` or `http://127.0.0.1`. Some browsers block camera access on other addresses unless the site uses HTTPS.
 
 ### Movements
 
